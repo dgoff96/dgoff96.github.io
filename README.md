@@ -1,2 +1,2 @@
-# tdgt.github.io
+# dgoff96.github.io
 Testing spectacles viewer
