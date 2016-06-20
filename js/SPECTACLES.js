@@ -364,7 +364,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     //**********************TESTING INTERFACE STUFF******************************
     //trying to make a new interface piece
     SPECT.colorCodingUI = function(){
-        var colorCodeFolder = SPECT.datGUI.addFolder('Color_Coding');
+        var colorCodeFolder = SPECT.datGui.addFolder('Color_Coding');
         SPECT.UIfolders.Color_Coding = colorCodeFolder;
     };
 
