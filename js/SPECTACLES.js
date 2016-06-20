@@ -360,6 +360,13 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
          .max(90)
          .step(0.1);*/
     };
+    
+    //**********************TESTING INTERFACE STUFF******************************
+    //trying to make a new interface piece
+    SPECT.colorCodingUI = function(){
+        var colorCodeFolder = SPECT.datGUI.addFolder('Color_Coding');
+        SPECT.UIfolders.Color_Coding = colorCodeFolder;
+    }
 
     //**********************TOP LEVEL METHOD!!!**********************************
     //call this method to enable view and selection UI
