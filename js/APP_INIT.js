@@ -45,6 +45,7 @@ $(document).ready(function(){
             app.viewAndSelectionUI();
             app.viewsUI();
             app.layersUI();
+            app.colorCodingUI();
         });
     });
 });
