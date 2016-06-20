@@ -366,7 +366,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.colorCodingUI = function(){
         var colorCodeFolder = SPECT.datGUI.addFolder('Color_Coding');
         SPECT.UIfolders.Color_Coding = colorCodeFolder;
-    }
+    };
 
     //**********************TOP LEVEL METHOD!!!**********************************
     //call this method to enable view and selection UI
