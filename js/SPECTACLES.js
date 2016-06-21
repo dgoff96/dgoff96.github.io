@@ -368,6 +368,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         SPECT.UIfolders.Color_Coding = colorCodeFolder;
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorByType').onChange(function (e) {
             if (e) {
+                SPECT.uiVariables.colorByZone = false;
                 $('#Spectacles_stats').show();
             }
             else {
@@ -376,6 +377,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         });
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorByZone').onChange(function (e) {
             if (e) {
+                SPECT.uiVariables.colorByType = false;
                 $('#Spectacles_stats').show();
             }
             else {
