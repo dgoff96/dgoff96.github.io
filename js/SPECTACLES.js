@@ -811,9 +811,9 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     };
     
     //ATTEMPT AT ADDING COLOR CODING FUNCTION
-SPECT.colorCodeByType = function(){
+    SPECT.colorCodeByType = function(){
     
-};
+    };
 
 
 
