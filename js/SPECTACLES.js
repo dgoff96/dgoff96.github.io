@@ -1083,6 +1083,11 @@ SPECT.colorCodeByType = function(){
             SPECT.zoomSelected();
         };
         
+        //coloringFunction not button
+        this.colorCodeByType = function(){
+            SPECT.colorCodeByType();
+        };
+        
         //coloring test
         this.colorByType = false;
         
