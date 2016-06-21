@@ -382,7 +382,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 $('#Spectacles_stats').hide();
             }
         });
-        colorCodeFolder.open();
+        //colorCodeFolder.open();
     };
 
     //**********************TOP LEVEL METHOD!!!**********************************
