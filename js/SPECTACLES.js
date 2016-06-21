@@ -366,7 +366,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.colorCodingUI = function(){
         var colorCodeFolder = SPECT.datGui.addFolder('Color_Coding');
         SPECT.UIfolders.Color_Coding = colorCodeFolder;
-        colorCodeFolder.add(SPECT.uiVariables, 'Panel Type');
+        colorCodeFolder.add(SPECT.uiVariables, 'colorByType');
         colorCodeFolder.add(SPECT.uiVariables, 'Installation Zones');
         colorCodeFolder.open();
     };
@@ -793,6 +793,11 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.loadNewModel = function (jsonData) {
         SPECT.jsonLoader.loadSceneFromJson(jsonData);
     };
+    
+    //ATTEMPT AT ADDING COLOR CODING FUNCTION
+    SPECT.colorByType = function (boolean){
+        
+    };
 
 
 
@@ -1058,6 +1063,11 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //zoom selected
         this.zoomSelected = function () {
             SPECT.zoomSelected();
+        };
+        
+        //coloring test
+        this.colorByType = function(){
+            SPECT.colorByType();
         };
 
 
