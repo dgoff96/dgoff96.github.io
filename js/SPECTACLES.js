@@ -366,6 +366,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.colorCodingUI = function(){
         var colorCodeFolder = SPECT.datGui.addFolder('Color_Coding');
         SPECT.UIfolders.Color_Coding = colorCodeFolder;
+        SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorCodeByType');
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorByType').onChange(function (e) {
             if (e) {
                 $('#Spectacles_stats').show();
