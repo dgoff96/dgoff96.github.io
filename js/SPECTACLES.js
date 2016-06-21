@@ -368,10 +368,10 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         SPECT.UIfolders.Color_Coding = colorCodeFolder;
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorByType').onChange(function (e) {
             if (e){
-                SPECT.renderer.setClearColor(Blue);
+                //SPECT.renderer.setClearColor(Blue);
             }
             else{
-                SPECT.renderer.setClearColor(White);
+                //SPECT.renderer.setClearColor(White);
             }
         };
         colorCodeFolder.add(SPECT.uiVariables, 'Installation Zones');
