@@ -374,7 +374,14 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 $('#Spectacles_stats').hide();
             }
         });
-        colorCodeFolder.add(SPECT.uiVariables, 'Installation Zones');
+        SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorByZone').onChange(function (e) {
+            if (e) {
+                $('#Spectacles_stats').show();
+            }
+            else {
+                $('#Spectacles_stats').hide();
+            }
+        });
         colorCodeFolder.open();
     };
 
@@ -1072,6 +1079,9 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         
         //coloring test
         this.colorByType = false;
+        
+        //zone color test
+        this.colorByZone = false;
 
 
 
