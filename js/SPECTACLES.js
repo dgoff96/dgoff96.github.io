@@ -38,6 +38,9 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.clock = {};          //the THREE.js clock
     SPECT.stats = undefined;               //the Stats object
     SPECT.backgroundColor = 0xFFFFFF;
+    
+    //Store Starting Materials
+    SPECT.originalMaterials = [];
 
 
     //*********************
@@ -366,23 +369,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.colorCodingUI = function(){
         var colorCodeFolder = SPECT.datGui.addFolder('Color_Coding');
         SPECT.UIfolders.Color_Coding = colorCodeFolder;
+        SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'Rendered');
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorCodeByType');
-        SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorByType').onChange(function (e) {
-            if (e) {
-                $('#Spectacles_stats').show();
-            }
-            else {
-                $('#Spectacles_stats').hide();
-            }
-        });
-        SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorByZone').onChange(function (e) {
-            if (e) {
-                $('#Spectacles_stats').show();
-            }
-            else {
-                $('#Spectacles_stats').hide();
-            }
-        });
         SPECT.UIfolders.Color_Coding.add()
         //colorCodeFolder.open();
     };
@@ -810,9 +798,57 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         SPECT.jsonLoader.loadSceneFromJson(jsonData);
     };
     
-    //ATTEMPT AT ADDING COLOR CODING FUNCTION
-    SPECT.colorCodeByType = function(){
     
+    //Store Original Materials
+    
+    //Rendered Display
+    SPECT.Rendered = function(){
+        var panels = SPECT.attributes.elementList;
+        for(i=0;i<panels.length;i++){
+            var panel = panels[i];
+            var pattern = panels[i].userData.PANEL_FAMILY;
+            var material = pattern.substr(0,1);
+            if (material === "C"){
+                var copperMaterial = new THREE.MeshPhongMaterial({
+                    color: "rgb(186,109,0)",
+                    ambient: "rgb(0,0,0)",
+                    emissive:"rgb(0,0,0)",
+                    specular: "rgb(186,109,0)",
+                    side: 2
+                });
+                SPECT.attributes.paintElement(panel,copperMaterial);
+            }
+            else{
+                var zincMaterial = new THREE.MeshPhongMaterial({
+                    color: "rgb(219,219,219)",
+                    ambient: "rgb(0,0,0)",
+                    emissive:"rgb(0,0,0)",
+                    specular: "rgb(219,219,219)",
+                    side: 2
+                });
+                SPECT.attributes.paintElement(panel,zincMaterial);
+            }
+        }
+    };
+    
+    //Color Code By Panel Type
+    SPECT.colorCodeByType = function(){
+        var panels = SPECT.attributes.elementList;
+        for(i=0;i<panels.length;i++){
+            var panel = panels[i]; 
+            var red = panels[i].userData.RED;
+            var green = panels[i].userData.GREEN;
+            var blue = panels[i].userData.BLUE;
+            var stringColor = "rgb(" + red.toString()+","+green.toString()+","+blue.toString()+")";
+            //var typeColor = new THREE.Color(red,green,blue);
+            //var hexColor = rgbToHex(red,green,blue);
+            var typeMaterial = new THREE.MeshBasicMaterial({
+                color: stringColor,
+                side: 2
+            });
+            SPECT.attributes.paintElement(panel,typeMaterial);
+        }
+        
     };
 
 
@@ -1083,21 +1119,16 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
             SPECT.zoomSelected();
         };
         
-        //coloringFunction not button
+        //Rendered Mode
+        this.Rendered = function(){
+            SPECT.Rendered();
+        };
+        
+        //Color Code By Type
         this.colorCodeByType = function(){
             SPECT.colorCodeByType();
         };
         
-        //coloring test
-        this.colorByType = false;
-        
-        //zone color test
-        this.colorByZone = false;
-
-
-
-
-
         //selected object color
         this.selectedObjectColor = "#FFFF00";
 
@@ -1817,3 +1848,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     }
 
 };
+
+function rgbToHex(r, g, b) {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
