@@ -801,10 +801,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         SPECT.jsonLoader.loadSceneFromJson(jsonData);
     };
     
-    //ATTEMPT AT ADDING COLOR CODING FUNCTION
-    SPECT.colorByType = function (boolean){
-        
-    };
+
 
 
 
