@@ -375,7 +375,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 //SPECT.renderer.setClearColor(White);
                 $('#Spectacles_stats').hide();
             }
-        };
+        });
         colorCodeFolder.add(SPECT.uiVariables, 'Installation Zones');
         colorCodeFolder.open();
     };
