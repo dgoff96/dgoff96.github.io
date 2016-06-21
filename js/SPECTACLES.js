@@ -1083,10 +1083,16 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         if (this.colorByZone){
             this.colorByType = false;
         }
+        else{
+            this.colorByType = false;
+        }
         //this.colorByType = false;
         
         //zone color test
         if(this.colorByType){
+            this.colorByZone = false;
+        }
+        else{
             this.colorByZone = false;
         }
         //this.colorByZone = false;
