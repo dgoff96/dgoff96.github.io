@@ -368,7 +368,6 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         SPECT.UIfolders.Color_Coding = colorCodeFolder;
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorByType').onChange(function (e) {
             if (e) {
-                SPECT.uiVariables.colorByZone = false;
                 $('#Spectacles_stats').show();
             }
             else {
@@ -377,7 +376,6 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         });
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorByZone').onChange(function (e) {
             if (e) {
-                SPECT.uiVariables.colorByType = false;
                 $('#Spectacles_stats').show();
             }
             else {
@@ -976,6 +974,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
             SPECT.lightingRig.updateSceneMaterials();
         }
     };
+    
+
 
     //function that sets the fog amount in the scene
     //doesn't seem like this should live in the lighting rig ... if we get more scene variables we may need a sceneFunctions
@@ -1080,10 +1080,16 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         };
         
         //coloring test
-        this.colorByType = false;
+        if (this.colorByZone){
+            this.colorByType = false;
+        }
+        //this.colorByType = false;
         
         //zone color test
-        this.colorByZone = false;
+        if(this.colorByType){
+            this.colorByZone = false;
+        }
+        //this.colorByZone = false;
 
 
 
