@@ -366,16 +366,6 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.colorCodingUI = function(){
         var colorCodeFolder = SPECT.datGui.addFolder('Color_Coding');
         SPECT.UIfolders.Color_Coding = colorCodeFolder;
-        SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorByType').onChange(function (e) {
-            if (e){
-                //SPECT.renderer.setClearColor(Blue);
-                $('#Spectacles_stats').show();
-            }
-            else{
-                //SPECT.renderer.setClearColor(White);
-                $('#Spectacles_stats').hide();
-            }
-        });
         colorCodeFolder.add(SPECT.uiVariables, 'Installation Zones');
         colorCodeFolder.open();
     };
@@ -1072,7 +1062,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         };
         
         //coloring test
-        this.colorByType = false;
+
 
 
 
