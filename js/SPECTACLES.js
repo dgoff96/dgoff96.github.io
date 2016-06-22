@@ -364,13 +364,14 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
          .step(0.1);*/
     };
     
-    //**********************TESTING INTERFACE STUFF******************************
-    //trying to make a new interface piece
+    //**********************COLOR CODING******************************
+    //call this method to enable color coding UI
     SPECT.colorCodingUI = function(){
         var colorCodeFolder = SPECT.datGui.addFolder('Color_Coding');
         SPECT.UIfolders.Color_Coding = colorCodeFolder;
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'Rendered');
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorCodeByType');
+        SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorCodeByZone');
         SPECT.UIfolders.Color_Coding.add()
         //colorCodeFolder.open();
     };
@@ -806,27 +807,29 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         var panels = SPECT.attributes.elementList;
         for(i=0;i<panels.length;i++){
             var panel = panels[i];
-            var pattern = panels[i].userData.PANEL_FAMILY;
-            var material = pattern.substr(0,1);
-            if (material === "C"){
-                var copperMaterial = new THREE.MeshPhongMaterial({
-                    color: "rgb(186,109,0)",
-                    ambient: "rgb(0,0,0)",
-                    emissive:"rgb(0,0,0)",
-                    specular: "rgb(186,109,0)",
-                    side: 2
-                });
-                SPECT.attributes.paintElement(panel,copperMaterial);
-            }
-            else{
-                var zincMaterial = new THREE.MeshPhongMaterial({
-                    color: "rgb(219,219,219)",
-                    ambient: "rgb(0,0,0)",
-                    emissive:"rgb(0,0,0)",
-                    specular: "rgb(219,219,219)",
-                    side: 2
-                });
-                SPECT.attributes.paintElement(panel,zincMaterial);
+            if(panel.userData.PANEL_FAMILY != null){
+                var pattern = panels[i].userData.PANEL_FAMILY;
+                var material = pattern.substr(0,1);
+                if (material === "C"){
+                    var copperMaterial = new THREE.MeshPhongMaterial({
+                        color: "rgb(186,109,0)",
+                        ambient: "rgb(0,0,0)",
+                        emissive:"rgb(0,0,0)",
+                        specular: "rgb(186,109,0)",
+                        side: 2
+                    });
+                    SPECT.attributes.paintElement(panel,copperMaterial);
+                }
+                else{
+                    var zincMaterial = new THREE.MeshPhongMaterial({
+                        color: "rgb(219,219,219)",
+                        ambient: "rgb(0,0,0)",
+                        emissive:"rgb(0,0,0)",
+                        specular: "rgb(219,219,219)",
+                        side: 2
+                    });
+                    SPECT.attributes.paintElement(panel,zincMaterial);
+                }
             }
         }
     };
@@ -835,20 +838,89 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.colorCodeByType = function(){
         var panels = SPECT.attributes.elementList;
         for(i=0;i<panels.length;i++){
-            var panel = panels[i]; 
-            var red = panels[i].userData.RED;
-            var green = panels[i].userData.GREEN;
-            var blue = panels[i].userData.BLUE;
-            var stringColor = "rgb(" + red.toString()+","+green.toString()+","+blue.toString()+")";
-            //var typeColor = new THREE.Color(red,green,blue);
-            //var hexColor = rgbToHex(red,green,blue);
-            var typeMaterial = new THREE.MeshBasicMaterial({
-                color: stringColor,
-                side: 2
-            });
-            SPECT.attributes.paintElement(panel,typeMaterial);
+            var panel = panels[i];
+            if (panel.userData.PANEL_FAMILY != null){
+                var red = panel.userData.RED;
+                var green = panel.userData.GREEN;
+                var blue = panel.userData.BLUE;
+                var stringColor = "rgb(" + red.toString()+","+green.toString()+","+blue.toString()+")";
+                //var typeColor = new THREE.Color(red,green,blue);
+                //var hexColor = rgbToHex(red,green,blue);
+                var typeMaterial = new THREE.MeshBasicMaterial({
+                    color: stringColor,
+                    side: 2                
+                });
+                SPECT.attributes.paintElement(panel,typeMaterial);
+            }
         }
         
+    };
+    
+    //Color Code By Install Zone
+    SPECT.colorCodeByZone = function(){
+        var panels = SPECT.attributes.elementList;
+        for (i=0;i<panels.length;i++){
+            var panel = panels[i];
+            if(panel.userData.PANEL_FAMILY != null){
+                var zone = panel.userData.INSTALL_ZONE;
+                if(zone === "A"){
+                    var Acolor = new THREE.MeshBasicMaterial({
+                        color:"rgb(0,255,255)",
+                        side: 2
+                    });
+                    SPECT.attributes.paintElement(panel,Acolor);
+                }
+                else if(zone === "B"){
+                    var Bcolor = new THREE.MeshBasicMaterial({
+                        color:"rgb(0,0,255)",
+                        side: 2
+                    });
+                    SPECT.attributes.paintElement(panel,Bcolor);
+                }
+                else if(zone === "C"){
+                    var Ccolor = new THREE.MeshBasicMaterial({
+                        color: "rgb(255,0,255)",
+                        side: 2
+                    });
+                    SPECT.attributes.paintElement(panel,Ccolor);
+                }
+                else if (zone === "D"){
+                    var Dcolor = new THREE.MeshBasicMaterial({
+                        color: "rgb(255,0,0)",
+                        side: 2
+                    });
+                    SPECT.attributes.paintElement(panel,Dcolor);
+                }
+                else if(zone === "E"){
+                    var Ecolor = new THREE.MeshBasicMaterial({
+                        color: "rgb(255,255,0)",
+                        side: 2
+                    });
+                    SPECT.attributes.paintElement(panel,Ecolor);
+                }
+                else if(zone === "F"){
+                    var Fcolor = new THREE.MeshBasicMaterial({
+                        color: "rgb(0,255,0)",
+                        side: 2
+                    });
+                    SPECT.attributes.paintElement(panel,Fcolor);
+                }
+                else if(zone === "SCAFFOLD"){
+                    var Scolor = new THREE.MeshBasicMaterial({
+                        color: "rgb(255,160,0)",
+                        side: 2
+                    });
+                    SPECT.attributes.paintElement(panel,Scolor);
+                }
+                else if(zone === "EAST"){
+                    var EASTcolor = new THREE.MeshBasicMaterial({
+                        color: "rgb(255,255,0)",
+                        side: 2
+                    });
+                    SPECT.attributes.paintElement(panel,EASTcolor);
+                }
+            }
+        }
     };
 
 
@@ -1127,6 +1199,11 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //Color Code By Type
         this.colorCodeByType = function(){
             SPECT.colorCodeByType();
+        };
+        
+        //Color Code By Install Zone
+        this.colorCodeByZone = function(){
+            SPECT.colorCodeByZone();
         };
         
         //selected object color
