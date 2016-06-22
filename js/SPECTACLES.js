@@ -914,7 +914,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 }
                 else if(zone === "EAST"){
                     var EASTcolor = new THREE.MeshBasicMaterial({
-                        color: "rgb(100,100,100)",
+                        color: "rgb(230,230,230)",
                         side: 2
                     });
                     SPECT.attributes.paintElement(panel,EASTcolor);
