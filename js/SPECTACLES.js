@@ -41,6 +41,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     
     //Store Starting Materials
     SPECT.originalMaterials = [];
+    SPECT.layerStorage = [];
 
 
     //*********************
@@ -372,8 +373,18 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'Rendered');
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorCodeByType');
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorCodeByZone');
-        SPECT.UIfolders.Color_Coding.add()
-        //colorCodeFolder.open();
+    };
+    
+
+    
+    //***********************SEARCH BY ATTRIBUTES********************************
+    //call this method to enable search UI
+    SPECT.searchUI = function(){ 
+        var searchFolder = SPECT.datGui.addFolder('Search_Model');
+        SPECT.UIfolders.Search_Model = searchFolder;
+        SPECT.CreateSearchUI();
+        SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'SEARCH');
+        SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'RESET');
     };
 
     //**********************TOP LEVEL METHOD!!!**********************************
@@ -571,6 +582,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         $(".Spectacles_loading").hide();
 
     };
+    
+
 
     //a function to add a textured obj/mtl pair to a scene
     SPECT.jsonLoader.addObjMtlToScene = function (objPath, mtlPath, zoomExtentsAfterLoad){
@@ -800,7 +813,6 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     };
     
     
-    //Store Original Materials
     
     //Rendered Display
     SPECT.Rendered = function(){
@@ -922,6 +934,64 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
             }
         }
     };
+    
+    //SEARCH MODEL FOR PANELS ID AND HIDE OTHERS
+    SPECT.SEARCH = function () {
+        var searchPat = SPECT.uiVariables.IDList;
+        if (searchPat != 't'){
+            var panels = SPECT.attributes.elementList;
+            for (i=0;i<panels.length;i++){
+                var panel = panels[i];
+                var pat = panel.userData.PANEL_FAMILY;
+                if (pat != null){
+                    if (pat !== searchPat){
+//                        var whiteOut = new THREE.MeshBasicMaterial({
+//                            color: "rgb(250,250,250)",
+//                            side: 2
+//                        });
+//                        SPECT.attributes.paintElement(panel,whiteOut);
+                        panel.visible = false;
+                    }
+                }
+            }
+        }
+        
+    };
+    
+    //RESET MODEL TO RENDERED MODE SHOWING ALL PANELS
+    SPECT.RESET = function (){
+        SPECT.uiVariables.IDList = 't';
+        var panels = SPECT.attributes.elementList;
+        var layerL = SPECT.layerStorage;
+        //console.log(layerL);
+        //check to see what layers are on
+        for (i=0;i<layerL.length;i++){
+            var lay = layerL[i];
+            //var test = alert(Object.keys(lay[0]));
+            console.log(lay);
+            console.log(Object.keys(lay)[0]);
+            console.log(lay[Object.keys(lay)[0]]);
+            //console.log(actualLayers[i]);
+            //console.log(lay);
+            if (lay[Object.keys(lay)[0]] === true){
+                for (j=0;j<panels.length;j++){
+                    var panel = panels[j];
+                    //console.log(panel.userData.layer);
+                    if (panel.userData.layer === Object.keys(lay)[0] && panel.visible === false){
+                        panel.visible = true;
+                    }
+            }
+        }
+//        for (i=0;i<panels.length;i++){
+//            var panel = panels[i];
+//            if (panel.visible === false){
+//                console.log(panel.layer);
+//                panel.visible = true;
+//            }
+        }
+        
+    };
+    
 
 
 
@@ -1130,6 +1200,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         this.sunLight = {};
         this.pointLights = [];
     };
+    
+
 
 
 
@@ -1176,6 +1248,9 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         this.fog = true;
 
         this.view = "v";
+        
+        //test for dropdown
+        this.IDList = 't';
 
         this.layers = "layers";
 
@@ -1196,7 +1271,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
             SPECT.Rendered();
         };
         
-        //Color Code By Type
+        //orcodebor Code By Type
         this.colorCodeByType = function(){
             SPECT.colorCodeByType();
         };
@@ -1204,6 +1279,16 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //Color Code By Install Zone
         this.colorCodeByZone = function(){
             SPECT.colorCodeByZone();
+        };
+        
+        //Search Test
+        this.SEARCH = function (){
+            SPECT.SEARCH();
+        };
+        
+        //RESET MODEL VISIBILITY
+        this.RESET = function (){
+            SPECT.RESET();
         };
         
         //selected object color
@@ -1714,6 +1799,25 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
             });
         }
     };
+    
+    //function to create drop down for panel IDs
+    SPECT.CreateSearchUI = function () {
+        //PANEL TYPES
+        //Create List of All Panel Names
+        var panels = SPECT.attributes.elementList;
+        var patternList = [];
+            for (i=0;i<panels.length;i++){
+                var panel = panels[i];
+                if(panel.userData.PANEL_FAMILY != null){
+                    var pattern = panel.userData.PANEL_FAMILY;
+                    patternList.push(pattern);
+                }
+            }
+            var setList = Array.from(new Set(patternList));
+            setList.sort();
+            //console.log(setList);
+        SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'IDList', setList).listen();
+    };
 
     //function to set the current view
     SPECT.views.setView = function (v) {
@@ -1849,6 +1953,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 //create an layer object that has a boolean property with its name
                 var layer = {};
                 layer[layerStrings[i]] = true;
+                SPECT.layerStorage.push(layer);
 
                 //add a checkbox per layer
                 layerFolder.add(layer, layerStrings[i]).onChange(function (e) {
@@ -1929,3 +2034,4 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
 function rgbToHex(r, g, b) {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
+
