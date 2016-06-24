@@ -972,6 +972,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
             console.log(Object.keys(lay)[0]);
             console.log(lay[Object.keys(lay)[0]]);
             //console.log(actualLayers[i]);
+            //blah blah
             //console.log(lay);
             if (lay[Object.keys(lay)[0]] === true){
                 for (j=0;j<panels.length;j++){
