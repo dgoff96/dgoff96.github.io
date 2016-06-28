@@ -385,7 +385,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.searchUI = function(){ 
         var searchFolder = SPECT.datGui.addFolder('Search_Model');
         SPECT.UIfolders.Search_Model = searchFolder;
-        SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'Number_Of_Search_Criteria');
+        SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'Number_Of_Criteria');
         SPECT.CreateAttributeList();
         SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'SEARCH');
         SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'RESET');
@@ -1264,7 +1264,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         this.IDList = 't';
         
         //number of search criteria
-        this.Number_Of_Search_Criteria = 1;
+        this.Number_Of_Criteria = 1;
         
         //attribute dropdown
         this.Available_Attributes = 'b';
