@@ -39,9 +39,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.stats = undefined;               //the Stats object
     SPECT.backgroundColor = 0xFFFFFF;
     
-    //Store info for attribute searching
-    SPECT.attSearch = {};
-    SPECT.searchAtt;
+    
     
     //Store Starting Materials
     SPECT.originalMaterials = [];
@@ -387,8 +385,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.searchUI = function(){ 
         var searchFolder = SPECT.datGui.addFolder('Search_Model');
         SPECT.UIfolders.Search_Model = searchFolder;
+        SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'Number_Of_Search_Criteria');
         SPECT.CreateAttributeList();
-        //SPECT.CreateSearchUI();
         SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'SEARCH');
         SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'RESET');
     };
@@ -1265,9 +1263,13 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //test for dropdown
         this.IDList = 't';
         
-        //dropdown
+        //number of search criteria
+        this.Number_Of_Search_Criteria = 1;
+        
+        //attribute dropdown
         this.Available_Attributes = 'b';
         
+        //what attribute to search for
         this.Attribute_To_Search_For = 'a';
 
         this.layers = "layers";
@@ -1818,7 +1820,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         }
     };
     
-    //function to get all available attributes of panels
+    //function to create interface for available attributes in model and searching by them
     SPECT.CreateAttributeList = function(){
         var objects = SPECT.attributes.elementList;
         var attributeList = [];
@@ -1839,13 +1841,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //attributeSet.sort();
         //console.log(attributeSet);
         SPECT.UIfolders.Search_Model.add(SPECT.uiVariables,'Attribute_To_Search_For',attributeSet).onFinishChange(function (e) {
-                //console.log(e);
-//                if(SPECT.uiVariables.Available_Attributes != 'b'){
-//                    console.log('true');
-//                    SPECT.UIfolders.Search_Model.remove(SPECT.uiVariables.Available_Attributes);  
-//                }
-                SPECT.searchAtt = e;
                 var attributeIndex;
+                //determing the index of the attribute that we are searching for
                 for (i=0;i<attributeSet.length;i++){
                     if(e === attributeSet[i]){
                         attributeIndex = i;
@@ -1853,6 +1850,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 }
                 var objs = SPECT.attributes.elementList;
                 var testList = [];
+                //get all unique attribute values for chosen search attribute
                 for(i=0;i<objs.length;i++){
                     var obj = objs[i];
                     var objData = obj.userData;
@@ -1874,30 +1872,6 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
             }); 
         //console.log(SPECT.searchAtt);
     };
-    
-    //function to create drop down for panel IDs
-//    SPECT.CreateSearchUI = function () {
-//        
-//        //Create Attribute List
-//        //SPECT.CreateAttributeList();
-//        //PANEL TYPES
-//        //Create List of All Panel Names
-//        
-//        var panels = SPECT.attributes.elementList;
-//        var patternList = [];
-//            for (i=0;i<panels.length;i++){
-//                var panel = panels[i];
-//                if(panel.userData.PANEL_FAMILY != null){
-//                    var pattern = panel.userData.PANEL_FAMILY;
-//                    //console.log(panel.userData);
-//                    patternList.push(pattern);
-//                }
-//            }
-//            var setList = Array.from(new Set(patternList));
-//            setList.sort();
-//            //console.log(setList);
-//        SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'IDList', setList).listen();
-//    };
 
     //function to set the current view
     SPECT.views.setView = function (v) {
@@ -1969,10 +1943,6 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
 
     };
     
-    //Function for resetting search attribute
-//    SPECT.attSearch.resetSearchAtt = function(){
-//        
-//    };
 
 
 
