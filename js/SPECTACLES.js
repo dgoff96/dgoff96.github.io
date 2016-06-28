@@ -45,6 +45,9 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.originalMaterials = [];
     SPECT.layerStorage = [];
     SPECT.attributeSet = [];
+    
+    //FILTER GUI
+    //var FILTER = this;
 
 
     //*********************
@@ -228,6 +231,9 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         SPECT.datGui = new dat.GUI({ autoPlace: false });
         SPECT.datGui.width = 300;
         $('.Spectacles_uiTarget').append(SPECT.datGui.domElement);
+        
+        //initialize filter dat.GUI object
+        //FILTER.datGui = new dat.GUI({autoPlace: false});
 
 
 
@@ -376,20 +382,27 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'Rendered');
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorCodeByType');
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorCodeByZone');
+        //console.log(SPECT.UIfolders.Color_Coding.__controllers.length);
     };
-    
-
     
     //***********************SEARCH BY ATTRIBUTES********************************
     //call this method to enable search UI
     SPECT.searchUI = function(){ 
         var searchFolder = SPECT.datGui.addFolder('Search_Model');
         SPECT.UIfolders.Search_Model = searchFolder;
-        SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'Number_Of_Criteria');
+        //SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'Number_Of_Criteria').min(1).step(1);
+        //SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'ADD_FILTER');
         SPECT.CreateAttributeList();
         SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'SEARCH');
         SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'RESET');
+        //console.log(SPECT.UIfolders.Search_Model);
     };
+    
+//    SPECT.ADD_FILTER = function(){
+//        var tempList = [1,2,2,3,4];
+//        SPECT.CreateAttributeList();
+//        console.log(SPECT.UIfolders.Search_Model.__controllers[0].property);
+//    };
 
     //**********************TOP LEVEL METHOD!!!**********************************
     //call this method to enable view and selection UI
@@ -970,7 +983,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     
     //RESET MODEL TO RENDERED MODE SHOWING ALL PANELS
     SPECT.RESET = function (){
-        SPECT.uiVariables.IDList = 't';
+        SPECT.uiVariables.Attribute_To_Search_For = 'a';
+        SPECT.uiVariables.Available_Attributes = 'b';
         var panels = SPECT.attributes.elementList;
         var layerL = SPECT.layerStorage;
         //console.log(layerL);
@@ -1263,8 +1277,19 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //test for dropdown
         this.IDList = 't';
         
+        //filter
+        this.filter = 'f';
+        
+        //filter variable
+        this.ADD_FILTER = function(){
+            SPECT.ADD_FILTER();
+        };
+        
+        //testing dropdown for test folder
+        this.test_List = 'n';
+        
         //number of search criteria
-        this.Number_Of_Criteria = 1;
+        this.Number_Of_Criteria = 2;
         
         //attribute dropdown
         this.Available_Attributes = 'b';
@@ -1338,6 +1363,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
 
     //this is the actual dat.gui object.  We'll add folders and UI objects in the APP_INIT document.ready function
     SPECT.datGui = {};
+    //FILTER.datGui = {};
 
     //an object to hold all of our GUI folders, which will be keyed by name.  We need these from other places in the app
     //now that we are dynamically adding and subtracting UI elements.
@@ -1866,7 +1892,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 var attSet = Array.from(new Set(testList));
                 SPECT.UIfolders.Search_Model.removeByProperty('Available_Attributes');
                 attSet.sort();
-                SPECT.UIfolders.Search_Model.add(SPECT.uiVariables,'Available_Attributes',attSet);
+                SPECT.UIfolders.Search_Model.add(SPECT.uiVariables,'Available_Attributes',attSet).listen();
                 //console.log(attSet);
                 //console.log(SPECT.searchAtt);
             }); 
