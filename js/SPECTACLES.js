@@ -1289,7 +1289,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         this.test_List = 'n';
         
         //number of search criteria
-        this.Number_Of_Criteria = 2;
+        //this.Number_Of_Criteria = 2;
         
         //attribute dropdown
         this.Available_Attributes = 'b';
