@@ -2046,6 +2046,21 @@ dat.GUI = dat.gui.GUI = (function (css, saveDialogueContents, styleSheet, contro
                 });
 
             },
+            
+            //inserted from google answer
+            removeByProperty:function(propertyName){
+                var max=this.__controllers.length;
+                var ind=-1;
+                for (var n=0;n<max;n++){
+                    if (this.__controllers[n].property==propertyName){
+                        ind=n;
+                        break;
+                    }
+                }
+                if(ind>-1){
+                    this.remove(this.__controllers[ind]);
+                }
+            },
 
             destroy: function () {
 
