@@ -46,8 +46,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.layerStorage = [];
     SPECT.attributeSet = [];
     
-    //FILTER GUI
-    //var FILTER = this;
+    var filterGUI;
 
 
     //*********************
@@ -390,6 +389,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.searchUI = function(){ 
         var searchFolder = SPECT.datGui.addFolder('Search_Model');
         SPECT.UIfolders.Search_Model = searchFolder;
+        //SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'Filter_Search').name('Filter Search');
         //SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'Number_Of_Criteria').min(1).step(1);
         //SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'ADD_FILTER');
         SPECT.CreateAttributeList();
@@ -397,11 +397,13 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'RESET');
         //console.log(SPECT.UIfolders.Search_Model);
     };
-    
-//    SPECT.ADD_FILTER = function(){
-//        var tempList = [1,2,2,3,4];
-//        SPECT.CreateAttributeList();
-//        console.log(SPECT.UIfolders.Search_Model.__controllers[0].property);
+
+//    SPECT.Filter_Search = function(){
+//        if(filterGUI != undefined){
+//            filterGUI.destroy();
+//            filterGUI = undefined;
+//        }
+//        filterGUI = new dat.GUI();
 //    };
 
     //**********************TOP LEVEL METHOD!!!**********************************
@@ -447,7 +449,6 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
 
 
 
-
     //*********************
     //*********************
     //*** JSON Model Loader
@@ -487,6 +488,9 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 console.log("something went wrong while trying to load the json data.");
                 console.log(e);
             }
+            SPECT.UIfolders.Search_Model.removeByProperty('Attribute_To_Search_For');
+            SPECT.UIfolders.Search_Model.removeByProperty('Available_Attributes');
+            SPECT.CreateAttributeList();
         };
 
         //read the file as text - this will fire the onload function above when a user selects a file
@@ -956,7 +960,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.SEARCH = function () {
         var searchAtt = SPECT.uiVariables.Attribute_To_Search_For;
         //var stringAtt = searchAtt.toString();
-        //console.log(stringAtt);
+        console.log(searchAtt);
         var checkAtt = SPECT.uiVariables.Available_Attributes;
         //console.log(checkAtt);
         var objs = SPECT.attributes.elementList;
@@ -983,7 +987,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     
     //RESET MODEL TO RENDERED MODE SHOWING ALL PANELS
     SPECT.RESET = function (){
-        SPECT.uiVariables.Attribute_To_Search_For = 'a';
+        //SPECT.uiVariables.Attribute_To_Search_For = 'a';
         SPECT.uiVariables.Available_Attributes = 'b';
         var panels = SPECT.attributes.elementList;
         var layerL = SPECT.layerStorage;
@@ -1277,14 +1281,6 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //test for dropdown
         this.IDList = 't';
         
-        //filter
-        this.filter = 'f';
-        
-        //filter variable
-        this.ADD_FILTER = function(){
-            SPECT.ADD_FILTER();
-        };
-        
         //testing dropdown for test folder
         this.test_List = 'n';
         
@@ -1325,6 +1321,11 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         this.colorCodeByZone = function(){
             SPECT.colorCodeByZone();
         };
+        
+        //FIlter Search
+//        this.Filter_Search = function () {
+//            SPECT.Filter_Search();
+//        };
         
         //Search Test
         this.SEARCH = function (){
@@ -1858,12 +1859,15 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
             //console.log(Object.keys(attL)[1]);
             for(j=0;j<Object.keys(attL).length;j++){
                 //console.log(attL[j]);
-                attributeList.push(Object.keys(attL)[j]);
+                if (Object.keys(attL)[j] != 'layer'){
+                    attributeList.push(Object.keys(attL)[j]);
+                }
             }
         }
         var attributeSet = Array.from(new Set(attributeList));
-        attributeSet.shift();
+        //attributeSet.shift();
         SPECT.attributeSet = attributeSet;
+        //console.log(attributeSet);
         //attributeSet.sort();
         //console.log(attributeSet);
         SPECT.UIfolders.Search_Model.add(SPECT.uiVariables,'Attribute_To_Search_For',attributeSet).onFinishChange(function (e) {
