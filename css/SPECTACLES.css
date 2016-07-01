@@ -26,9 +26,9 @@
 .Spectacles_attributeList {
     height: 1px;
     width: 360px;
-    background-color: #fafafa;
+    background-color: #000000;
     font-size: 11px;
-    color: #555;
+    color: #FFFFFF;
     text-align: left;
     position: fixed;
     z-index: 999;
@@ -45,7 +45,7 @@
 }
 
 .Spectacles_attributeListHeader {
-    background-color: #e8e8e8;
+    background-color: #000000;
     font-size: 13px;
     padding: 5px 2px;
 }
@@ -96,11 +96,13 @@
 
 }
 
+/*
 .Spectacles_uiTarget {
     position: fixed;
     width: 300px;
     z-index: 10;
 }
+*/
 
 .Spectacles_Header {
     background-color: #e8e8e8;
