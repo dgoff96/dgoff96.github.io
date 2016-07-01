@@ -91,7 +91,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
 
 
         //append the loading div and let it respond to the parent div resizing
-        SPECT.viewerDiv.append("<div class='Spectacles_loading'><h1>Loading Spectacles .json file...</h1></div>");
+        SPECT.viewerDiv.append("<div class='Spectacles_loading'><h1>Loading .json file...</h1></div>");
         //function to position the loading div
         var setLoading = function () {
 
