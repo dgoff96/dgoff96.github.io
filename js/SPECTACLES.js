@@ -49,6 +49,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.guiCount = 0;
     SPECT.filters = [];
     SPECT.filterVals = [];
+    SPECT.counter = 0;
     
     //var filterObj;
     var filterGUI;
@@ -452,7 +453,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
             index = SPECT.guiCount-1;
             SPECT.filters.splice(index,1);
             SPECT.filterVals.splice(index,1);
-            console.log(SPECT.filters);
+            //console.log(SPECT.filters);
             var panels = SPECT.attributes.elementList;
             var layerL = SPECT.layerStorage;
             //check to see what layers are on
@@ -1097,6 +1098,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.filteredSearch = function(){
         //console.log(SPECT.filters);
         //console.log(SPECT.filterVals);
+        var filterSet = Array.from(new Set(SPECT.filters));
+        console.log(filterSet);
         var objs = SPECT.attributes.elementList;
         for (i=0;i<objs.length;i++){
             var obj = objs[i];
@@ -1110,8 +1113,11 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 //console.log(searchAtt);
                 //console.log(checkAtt);
                 //console.log(objAtt);
-                if (objData.hasOwnProperty(searchAtt)){
+                //if (objData.hasOwnProperty(searchAtt)){
                     if(checkAtt === undefined){
+                        testList.push(true);
+                    }
+                    else if(objAtt == undefined){
                         testList.push(true);
                     }
                     else if(objAtt === checkAtt){
@@ -1121,7 +1127,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                         testList.push(false);
                     }
                     
-                }
+                //}
             }
             var testSet = Array.from(new Set(testList));
             //console.log(testSet.length);
@@ -2072,6 +2078,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                         attributeIndex = i;
                     }       
                 }
+                //console.log(attributeIndex);
                 var objs = SPECT.attributes.elementList;
                 var testList = [];
                 //get all unique attribute values for chosen search attribute
@@ -2079,7 +2086,9 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                     var obj = objs[i];
                     var objData = obj.userData;
                     if (Object.keys(objData).length > 1){
-                        var listAtt = objData[Object.keys(objData)[attributeIndex]];
+                        //console.log(objData[e]);
+                        //var listAtt = objData[Object.keys(objData)[attributeIndex]];
+                        var listAtt = objData[e];
                         if (listAtt != null){
                             testList.push(listAtt);
                         }
@@ -2088,6 +2097,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                     //console.log(checkAtt); 
                 }
                 var attSet = Array.from(new Set(testList));
+                //console.log(attSet);
                 SPECT.UIfolders.Search_Model.removeByProperty('Available_Attributes');
                 attSet.sort();
                 SPECT.UIfolders.Search_Model.add(SPECT.uiVariables,'Available_Attributes',attSet).listen().onChange(function(e){
@@ -2155,7 +2165,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                     var obj = objs[i];
                     var objData = obj.userData;
                     if (Object.keys(objData).length > 1){
-                        var listAtt = objData[Object.keys(objData)[attributeIndex]];
+                        //var listAtt = objData[Object.keys(objData)[attributeIndex]];
+                        var listAtt = objData[e];
                         if (listAtt != null){
                             testList.push(listAtt);
                         }
