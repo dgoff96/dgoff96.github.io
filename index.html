@@ -77,8 +77,20 @@ RawBlameHistory     89 lines (78 sloc)  3.57 KB
     </style>
 </head>
 <body>
-
+   
 <div id="Spectacles_output" style="position:fixed; top:0; left:0; width:100%; height:100%;"></div>
+    
+    <!-- Counter for number of elements found by search-->
+<div class="CounterConsole" id="ccnsl"></div> 
+<div class = "ConsoleHeader" id= "cnslHead">
+    <h1>Number of Elements</h1>
+    </div>
+
+<div class = "ColorConsole" id="colCnsl"></div>
+<div class = "ColorHeader" id = "colHead">
+    <h1>Number of Uniques</h1>
+    </div>
+    
 <script type="application/javascript">
     window.addEventListener('resize', function(){
         $("#Spectacles_output").css("height",window.innerHeight.toString());
