@@ -407,6 +407,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         SPECT.max_filters();
         var searchFolder = SPECT.datGui.addFolder('Search_Model');
         SPECT.UIfolders.Search_Model = searchFolder;
+        SPECT.datGui.add(SPECT.uiVariables, 'downloadExcel').name('Download CSV File');
         SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'filterUI').name("Add Filter").onChange(function(e){
             SPECT.guiCount += 1;
             if (SPECT.guiCount === 1){
@@ -1361,6 +1362,53 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     function updateColorCnsl(){
         var colorCnsl = document.getElementById('colCnsl').innerHTML = SPECT.attributeList.length.toString();
     }
+    
+    SPECT.downloadExcel = function(){
+        var dataList = [];
+        var tempList = [];
+        //add first row of value names
+        for(i=0;i<SPECT.attributeSet.length;i++){
+            tempList.push(SPECT.attributeSet[i]);
+        }
+        dataList.push(tempList);
+        //console.log(dataList);
+        //Add all attributes to file
+        var objs = SPECT.attributes.elementList;
+        for(i=0;i<objs.length;i++){
+            var obj = objs[i];
+            var objData = obj.userData;
+            var objKeys = Object.keys(objData);
+            var valList = [];
+            for(j=0;j<SPECT.attributeSet.length;j++){
+                var att = SPECT.attributeSet[j];
+                //console.log(att);
+                var attribute = objData[SPECT.attributeSet[j]];
+                if (attribute == undefined){
+                    valList.push('N/A');
+                }
+                else{
+                    valList.push(attribute);
+                }
+            }
+            dataList.push(valList);
+        }
+        var csvRows = [];
+        for(i=0;i<dataList.length;i++){
+            csvRows.push(dataList[i].join(','));
+        }
+        //console.log(csvRows);
+        var csvString = csvRows.join("%0A");
+        //console.log(csvString);
+        
+        var a = document.createElement('a');
+        a.href = 'data:attachment/csv,' + csvString;
+        a.target = '_blank';
+        a.download = 'myFile.csv';
+        
+        document.body.appendChild(a);
+        a.click();
+        
+    };
 
 
 
@@ -1724,6 +1772,10 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         
         this.closeFilter = function(){
             SPECT.closeFilter();
+        };
+        
+        this.downloadExcel = function(){
+            SPECT.downloadExcel();
         };
 
         //this.filterObj = new FilterObj();
@@ -2259,6 +2311,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         var attributeSet = Array.from(new Set(attributeList));
         //attributeSet.shift();
         SPECT.attributeSet = attributeSet;
+        //console.log(SPECT.attributeSet);
         //console.log(attributeSet);
         //attributeSet.sort();
         //console.log(attributeSet);
@@ -2288,7 +2341,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                     //console.log(checkAtt); 
                 }
                 var attSet = Array.from(new Set(testList));
-                console.log(attSet);
+                //console.log(attSet);
                 //console.log(attSet);
                 SPECT.UIfolders.Search_Model.removeByProperty('Available_Attributes');
                 attSet.sort();
@@ -2350,6 +2403,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         var attributeSet = Array.from(new Set(attributeList));
         //attributeSet.shift();
         //SPECT.attributeSet = attributeSet;
+        //console.log(SPECT.attributeSet);
         //console.log(attributeSet);
         //attributeSet.sort();
         //console.log(attributeSet);
