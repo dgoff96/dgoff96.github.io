@@ -1284,8 +1284,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
             //console.log(valList);
             filterLists.push(valList);
         }
-        console.log(filterLists);
-        console.log(filterLists.length);
+        //console.log(filterLists);
+        //console.log(filterLists.length);
         
         var objs = SPECT.attributes.elementList;
         for(i=0;i<objs.length;i++){
@@ -1298,30 +1298,18 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                     var searchAtt = filterLists[j][0];
                     var checkAtt = filterLists[j][k];
                     var objAtt = objData[searchAtt];
-//                    console.log(searchAtt);
-//                    console.log(checkAtt);
-//                    console.log(objAtt);
                     if(objAtt !== undefined){
-//                        if(checkAtt === undefined){
-//                            checkList.push(true);
-//                        }
-//                        if(objAtt == undefined){
-//                            checkList.push(true);
-//                        }
                         if(objAtt === checkAtt){
                             checkList.push(true);
-                            //console.log("YES!")
                         }
                         else{
                             checkList.push(false);
-                            //console.log("NO!");
                         }
                     }
                     else{
                         checkList.push(false);
                     }
                 }
-                //console.log(checkList);
                 if(checkList.indexOf(true) !== -1){
                     testList.push(true);
                 }
@@ -1329,13 +1317,19 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                     testList.push(false);
                 }
             }
-            //console.log(testList);
             if(testList.indexOf(false) !== -1){
                 obj.visible = false;
             }
             else{
                 SPECT.counter += 1;
                 updateCnsl();
+            }
+            //console.log(SPECT.guiList[1].Available_Attributes);
+            var layer = objData.layer;
+            var checkLayer = SPECT.filterVals[0];
+            //console.log(checkLayer);
+            if(layer !== checkLayer){
+                obj.visible = true;
             }
         }
         
