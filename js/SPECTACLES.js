@@ -692,6 +692,9 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         if (SPECT.layers.layerList.length > 0) {
             SPECT.layers.purge();
         }
+        if (SPECT.originalMaterials.length > 0){
+            SPECT.originalMaterials = [];
+        }
 
         //parse the JSON into a THREE scene
         var loader = new THREE.ObjectLoader();
@@ -867,6 +870,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 //items[i].material.transparent = true;
                 //items[i].material.opacity = 1.0;
                 SPECT.attributes.elementList.push(items[i]);
+                SPECT.originalMaterials.push(items[i].material);
 
 
             }
@@ -959,33 +963,11 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     
     //Rendered Display
     SPECT.Rendered = function(){
-        var panels = SPECT.attributes.elementList;
-        for(i=0;i<panels.length;i++){
-            var panel = panels[i];
-            if(panel.userData.PANEL_FAMILY != null){
-                var pattern = panels[i].userData.PANEL_FAMILY;
-                var material = pattern.substr(0,1);
-                if (material === "C"){
-                    var copperMaterial = new THREE.MeshPhongMaterial({
-                        color: "rgb(186,109,0)",
-                        ambient: "rgb(0,0,0)",
-                        emissive:"rgb(0,0,0)",
-                        specular: "rgb(186,109,0)",
-                        side: 2
-                    });
-                    SPECT.attributes.paintElement(panel,copperMaterial);
-                }
-                else{
-                    var zincMaterial = new THREE.MeshPhongMaterial({
-                        color: "rgb(219,219,219)",
-                        ambient: "rgb(0,0,0)",
-                        emissive:"rgb(0,0,0)",
-                        specular: "rgb(219,219,219)",
-                        side: 2
-                    });
-                    SPECT.attributes.paintElement(panel,zincMaterial);
-                }
-            }
+        var objs = SPECT.attributes.elementList;
+        for(i=0;i<objs.length;i++){
+            var obj = objs[i];
+            var originalMat = SPECT.originalMaterials[i];
+            SPECT.attributes.paintElement(obj,originalMat);
         }
     };
     
@@ -1123,8 +1105,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 side: 2
             });
             var checkAtt = SPECT.attributeList[i];
-            console.log(checkAtt);
-            console.log(colorString);
+            //console.log(checkAtt);
+            //console.log(colorString);
             for(j=0;j<objs.length;j++){
                 var obj = objs[j];
                 var objData = obj.userData;
@@ -1388,6 +1370,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         updateCnsl();
         $(".CounterConsole").css('visibility','hidden');
         $(".ConsoleHeader").css('visibility', 'hidden');
+        $(".ColorConsole").css('visibility', 'hidden');
+        $(".ColorHeader").css('visibility', 'hidden');
         SPECT.uiVariables.Available_Attributes = 'b';
         var panels = SPECT.attributes.elementList;
         var layerL = SPECT.layerStorage;
@@ -1418,7 +1402,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
 //                panel.visible = true;
 //            }
         }
-        
+        SPECT.Rendered();
     };
     
     function updateCnsl() {
