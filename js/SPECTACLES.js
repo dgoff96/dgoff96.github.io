@@ -53,6 +53,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.counter = 0;
     SPECT.uniqueValues = 0;
     SPECT.searchedElements = [];
+    SPECT.dataElements = [];
     
     //var filterObj;
     var filterGUI;
@@ -409,7 +410,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         SPECT.max_filters();
         var searchFolder = SPECT.datGui.addFolder('Search_Model');
         SPECT.UIfolders.Search_Model = searchFolder;
-        SPECT.datGui.add(SPECT.uiVariables, 'downloadExcel').name('Download CSV File');
+        //SPECT.datGui.add(SPECT.uiVariables, 'downloadExcel').name('Download CSV File');
         SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'filterUI').name("Add Filter").onChange(function(e){
             SPECT.guiCount += 1;
             if (SPECT.guiCount === 1){
@@ -417,11 +418,11 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 //SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'filteredSearch').name("Filtered Search");
                 $(".ColorConsole").css('visibility','hidden');
                 $(".ColorHeader").css('visibility', 'hidden');
-                SPECT.UIfolders.Search_Model.removeByProperty('RESET');
-                SPECT.UIfolders.Search_Model.removeByProperty('Attribute_To_Search_For');
-                SPECT.UIfolders.Search_Model.removeByProperty('Available_Attributes');
-                SPECT.UIfolders.Search_Model.removeByProperty('colorByAttribute');
-                SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'RESET');
+                //SPECT.UIfolders.Search_Model.removeByProperty('RESET');
+                //SPECT.UIfolders.Search_Model.removeByProperty('Attribute_To_Search_For');
+                //SPECT.UIfolders.Search_Model.removeByProperty('Available_Attributes');
+                //SPECT.UIfolders.Search_Model.removeByProperty('colorByAttribute');
+                //SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'RESET');
             }
         });
 //        SPECT.UIfolders.Search_Model.add(SPECT.uiVariables.filterObj, 'openFilt').name('Add Filter').onChange(function(e){
@@ -434,9 +435,19 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'ADD_FILTER');
         //SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'SEARCH');
         SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'RESET');
+        SPECT.CreateScopeList();
         SPECT.CreateAttributeList();
+        
         //console.log(SPECT.uiVariables.filterObj.filterList);
     };
+    
+        //***********************Download Data********************************
+    SPECT.downloadUI = function(){
+        var downloadFolder = SPECT.datGui.addFolder('Download_Data');
+        SPECT.UIfolders.Download_Data = downloadFolder;
+        SPECT.UIfolders.Download_Data.add(SPECT.uiVariables, 'downloadComplete').name('Download Complete Data Set');
+        SPECT.UIfolders.Download_Data.add(SPECT.uiVariables, 'downloadFiltered').name('Download Filtered Data Set');
+    }
     
 //    var filterObj;
 //    function createFilterGUI(){
@@ -456,11 +467,11 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
 //    }
     
     SPECT.filterUI = function () {
-        var index = SPECT.guiCount-1;
+        var index = SPECT.guiCount;
         //console.log(index);
         SPECT.guiList[index] = new dat.GUI({autoPlace: true ,width:300});
         SPECT.guiList[index].add(SPECT.uiVariables, 'closeFilter').name('[X] CLOSE').onChange(function(e){
-            index = SPECT.guiCount-1;
+            index = SPECT.guiCount;
             SPECT.filters.splice(index,1);
             SPECT.filterVals.splice(index,1);
             //console.log(SPECT.filters);
@@ -479,18 +490,20 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                     }
                 }
             }
-            if(SPECT.guiCount !== 1){
+            if(SPECT.guiCount !== 0){
                 SPECT.filteredSearch();
             }
             if(SPECT.guiCount == 1){
                 $(".CounterConsole").css('visibility','hidden');
                 $(".ConsoleHeader").css('visibility', 'hidden');
-                SPECT.UIfolders.Search_Model.removeByProperty('filteredSearch');
-                SPECT.UIfolders.Search_Model.removeByProperty('RESET');
+                //SPECT.UIfolders.Search_Model.removeByProperty('filteredSearch');
+                //SPECT.UIfolders.Search_Model.removeByProperty('RESET');
                 //SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'SEARCH');
-                SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'RESET');
-                SPECT.CreateAttributeList();
+                //SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'RESET');
+                //SPECT.CreateAttributeList();
                 SPECT.uiVariables.Attribute_To_Search_For = 'a';
+                SPECT.dataElements = [];
+                SPECT.RESET();
             }
             SPECT.guiCount -= 1;
         });
@@ -501,7 +514,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     
     
     SPECT.closeFilter = function(){
-        var index = SPECT.guiCount;
+        var index = SPECT.guiCount+1;
         SPECT.guiList[index].destroy();
     }
     
@@ -1249,25 +1262,44 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     };
     
     SPECT.filteredSearch = function(){
-        //console.log(SPECT.filters);
-        //console.log(SPECT.filterVals);
+        SPECT.dataElements = [];
+        var filterCheck;
+        var filterValCheck;
+        
+        if(SPECT.uiVariables.Scopes === 'All'){
+            //console.log(SPECT.filters);
+            var newFilters = [];
+            var newFilterVals = [];
+            for(i=1;i<SPECT.filters.length;i++){
+                newFilters.push(SPECT.filters[i]);
+            }
+            for(i=1;i<SPECT.filterVals.length;i++){
+                newFilterVals.push(SPECT.filterVals[i]);
+            }
+            filterCheck = newFilters;
+            filterValCheck = newFilterVals;
+            //console.log(newFilters);
+            //console.log(newFilterVals);
+        }
+        else{
+            filterCheck = SPECT.filters;
+            filterValCheck = SPECT.filterVals;
+        }
         //Account for doubling up on parameters
-        var filterSet = Array.from(new Set(SPECT.filters));
+        var filterSet = Array.from(new Set(filterCheck));
         //console.log(filterSet);
         var filterLists = [];
         for(i=0;i<filterSet.length;i++){
             var valList = [];
             valList.push(filterSet[i]);
-            for(j=0;j<SPECT.filters.length;j++){
-                if(SPECT.filters[j] === filterSet[i]){
-                    valList.push(SPECT.filterVals[j]);
+            for(j=0;j<filterCheck.length;j++){
+                if(filterCheck[j] === filterSet[i]){
+                    valList.push(filterValCheck[j]);
                 }
             }
             //console.log(valList);
             filterLists.push(valList);
         }
-        //console.log(filterLists);
-        //console.log(filterLists.length);
         
         var objs = SPECT.attributes.elementList;
         for(i=0;i<objs.length;i++){
@@ -1305,60 +1337,18 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
             else{
                 SPECT.counter += 1;
                 updateCnsl();
+                SPECT.dataElements.push(obj);
             }
             //console.log(SPECT.guiList[1].Available_Attributes);
-            var layer = objData.layer;
-            var checkLayer = SPECT.filterVals[0];
-            //console.log(checkLayer);
-            if(layer !== checkLayer){
-                obj.visible = true;
+            if(SPECT.uiVariables.Scopes !== 'All'){
+                var layer = objData.layer;
+                var checkLayer = SPECT.filterVals[0];
+                //console.log(checkLayer);
+                if(layer !== checkLayer){
+                    //obj.visible = true;
+                }
             }
         }
-        
-        //console.log(filterSet);
-        //ORIGINAL FILTERED SEARCH
-//        var objs = SPECT.attributes.elementList;
-//        for (i=0;i<objs.length;i++){
-//            var obj = objs[i];
-//            var objData = obj.userData;
-//            var testList = [];
-//            for(j=0;j<SPECT.filters.length;j++){
-//                var searchAtt = SPECT.filters[j];
-//                var checkAtt = SPECT.filterVals[j];
-//                //console.log(checkAtt);
-//                var objAtt = objData[searchAtt];
-//                //console.log(searchAtt);
-//                //console.log(checkAtt);
-//                //console.log(objAtt);
-//                if (objData.hasOwnProperty(searchAtt)){
-//                    if(checkAtt === undefined){
-//                        testList.push(true);
-//                    }
-////                    else if(objAtt == undefined){
-////                        testList.push(true);
-////                    }
-//                    else if(objAtt === checkAtt){
-//                        testList.push(true);
-//                    }
-//                    else{
-//                        testList.push(false);
-//                    }
-//                    
-//                }
-//                else{
-//                    testList.push(false);
-//                }
-//            }
-//            var testSet = Array.from(new Set(testList));
-//            //console.log(testSet.length);
-//            if(testList.indexOf(false) !== -1){
-//                obj.visible = false;
-//            }
-//            else{
-//                SPECT.counter += 1;
-//                updateCnsl();
-//            }
-//        }
     };
             
  
@@ -1379,13 +1369,6 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //check to see what layers are on
         for (i=0;i<layerL.length;i++){
             var lay = layerL[i];
-            //var test = alert(Object.keys(lay[0]));
-            //console.log(lay);
-            //console.log(Object.keys(lay)[0]);
-            //console.log(lay[Object.keys(lay)[0]]);
-            //console.log(actualLayers[i]);
-            //blah blah
-            //console.log(lay);
             if (lay[Object.keys(lay)[0]] === true){
                 for (j=0;j<panels.length;j++){
                     var panel = panels[j];
@@ -1393,14 +1376,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                     if (panel.userData.layer === Object.keys(lay)[0] && panel.visible === false){
                         panel.visible = true;
                     }
+                }
             }
-        }
-//        for (i=0;i<panels.length;i++){
-//            var panel = panels[i];
-//            if (panel.visible === false){
-//                console.log(panel.layer);
-//                panel.visible = true;
-//            }
         }
         SPECT.Rendered();
     };
@@ -1414,7 +1391,15 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     }
     
     //DOWNLOAD DATA AS CSV FILE FOR EXCEL
-    SPECT.downloadExcel = function(){
+    SPECT.downloadExcel = function(l){
+        var dataElements;
+        if(l.length === 0){
+            dataElements = SPECT.attributes.elementList; 
+        }
+        else{
+           dataElements = l; 
+        }
+        
         var dataList = [];
         var tempList = [];
         //add first row of value names
@@ -1424,7 +1409,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         dataList.push(tempList);
         //console.log(dataList);
         //Add all attributes to file
-        var objs = SPECT.attributes.elementList;
+        var objs = dataElements;
+        //var objs = SPECT.attributes.elementList;
         for(i=0;i<objs.length;i++){
             var obj = objs[i];
             var objData = obj.userData;
@@ -1729,6 +1715,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //attribute dropdown
         this.Available_Attributes = 'b';
         
+        this.Scopes = 's';
+        
         //what attribute to search for
         this.Attribute_To_Search_For = 'a';
 
@@ -1825,9 +1813,13 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
             SPECT.closeFilter();
         };
         
-        this.downloadExcel = function(){
-            SPECT.downloadExcel();
+        this.downloadComplete = function(){
+            SPECT.downloadExcel(SPECT.attributes.elementList);
         };
+        
+        this.downloadFiltered = function(){
+            SPECT.downloadExcel(SPECT.dataElements);
+        }
 
         //this.filterObj = new FilterObj();
         
@@ -2366,7 +2358,16 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //console.log(attributeSet);
         //attributeSet.sort();
         //console.log(attributeSet);
-        SPECT.UIfolders.Search_Model.add(SPECT.uiVariables,'Attribute_To_Search_For',attributeSet).name('Attribute To Search For').listen().onFinishChange(function (e) {
+        SPECT.UIfolders.Search_Model.add(SPECT.uiVariables,'Attribute_To_Search_For',attributeSet).name('Color Code By:').onFinishChange(function (e) {
+            var functionList = SPECT.UIfolders.Search_Model.__controllers;
+            if (functionList.length !== 4){
+                SPECT.UIfolders.Search_Model.removeByProperty('colorByAttribute');
+            }
+            SPECT.UIfolders.Search_Model.add(SPECT.uiVariables,'colorByAttribute').name('Color Code Model').onFinishChange(function(e){
+                updateColorCnsl();
+                $(".ColorConsole").css('visibility','visible');
+                $(".ColorHeader").css('visibility','visible');
+            });
                 var attributeIndex;
                 //determing the index of the attribute that we are searching for
                 for (i=0;i<attributeSet.length;i++){
@@ -2397,65 +2398,83 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 SPECT.UIfolders.Search_Model.removeByProperty('Available_Attributes');
                 attSet.sort();
                 SPECT.attributeList = attSet;
-                SPECT.UIfolders.Search_Model.add(SPECT.uiVariables,'Available_Attributes',attSet).onChange(function(e){
-                    $(".CounterConsole").css('visibility','visible');
-                    $(".ConsoleHeader").css('visibility', 'visible');
-                    var panels = SPECT.attributes.elementList;
-                    var layerL = SPECT.layerStorage;
-                    //check to see what layers are on
-                    for (i=0;i<layerL.length;i++){
-                        var lay = layerL[i];
-                        if (lay[Object.keys(lay)[0]] === true){
-                            for (j=0;j<panels.length;j++){
-                                var panel = panels[j];
-                                //console.log(panel.userData.layer);
-                                if (panel.userData.layer === Object.keys(lay)[0] && panel.visible === false){
-                                    panel.visible = true;
-                                }
-                            }
-                        }
-                    }
-                    SPECT.counter = 0;
-                    SPECT.SEARCH();
-                    console.log(SPECT.counter);
-                });
-                //console.log(attSet);
-                //console.log(SPECT.searchAtt);
-                $(".ColorConsole").css('visibility','hidden');
-                $(".ColorHeader").css('visibility', 'hidden');
-                SPECT.UIfolders.Search_Model.removeByProperty('colorByAttribute');
-                SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'colorByAttribute').name('Color Code').onChange(function(e){
-                    updateColorCnsl();
-                    $(".ColorConsole").css('visibility','visible');
-                    $(".ColorHeader").css('visibility', 'visible');
-                });
+//                SPECT.UIfolders.Search_Model.add(SPECT.uiVariables,'Available_Attributes',attSet).onChange(function(e){
+//                    $(".CounterConsole").css('visibility','visible');
+//                    $(".ConsoleHeader").css('visibility', 'visible');
+//                    var panels = SPECT.attributes.elementList;
+//                    var layerL = SPECT.layerStorage;
+//                    //check to see what layers are on
+//                    for (i=0;i<layerL.length;i++){
+//                        var lay = layerL[i];
+//                        if (lay[Object.keys(lay)[0]] === true){
+//                            for (j=0;j<panels.length;j++){
+//                                var panel = panels[j];
+//                                //console.log(panel.userData.layer);
+//                                if (panel.userData.layer === Object.keys(lay)[0] && panel.visible === false){
+//                                    panel.visible = true;
+//                                }
+//                            }
+//                        }
+//                    }
+//                    SPECT.counter = 0;
+//                    SPECT.SEARCH();
+//                    console.log(SPECT.counter);
+                //});
+//                //console.log(attSet);
+//                //console.log(SPECT.searchAtt);
+//                $(".ColorConsole").css('visibility','hidden');
+//                $(".ColorHeader").css('visibility', 'hidden');
+//                SPECT.UIfolders.Search_Model.removeByProperty('colorByAttribute');
+//                SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'colorByAttribute').name('Color Code').onChange(function(e){
+//                    updateColorCnsl();
+//                    $(".ColorConsole").css('visibility','visible');
+//                    $(".ColorHeader").css('visibility', 'visible');
+//                });
+            
             }); 
         
         //console.log(SPECT.searchAtt);
     };
     
+    
+    SPECT.CreateScopeList = function(){
+        var objs = SPECT.attributes.elementList;
+        var scopeList = [];
+        for(i=0;i<objs.length;i++){
+            var obj = objs[i];
+            var objData = obj.userData;
+            var scope = objData.layer;
+            scopeList.push(scope);
+        }
+        var scopeSet = Array.from(new Set(scopeList));
+        scopeSet.unshift('All');
+        SPECT.UIfolders.Search_Model.add(SPECT.uiVariables, 'Scopes', scopeSet).name('Scope').onChange(function(e){
+            SPECT.filterVals[0] = e;
+        });
+        SPECT.filters[0] = 'layer';
+    };
     //Function for adding attributes to filter GUIs Pretty much the same function as SPECT.CreateAttributeList but tweaked for filter GUIs
     SPECT.CreateFilterList = function(v){
         
-        if(v === 0){
-            var objects = SPECT.attributes.elementList;
-            var scopeList = [];
-            for(i=0;i<objects.length;i++){
-                var obj = objects[i];
-                var objdata = obj.userData;
-                var scope = objdata.layer;
-                scopeList.push(scope);
-            }
-            var scopeSet = Array.from(new Set(scopeList));
-            //console.log(scopeSet);
-            SPECT.guiList[v].removeByProperty('Available_Attributes');
-            scopeSet.sort();
-            SPECT.guiList[v].add(SPECT.uiVariables,'Available_Attributes', scopeSet).name('Scope').onChange(function(e){
-                SPECT.filterVals[v] = e;
-            });
-            SPECT.filters[v] = 'layer';
-        }
-        else{
+//        if(v === 0){
+//            var objects = SPECT.attributes.elementList;
+//            var scopeList = [];
+//            for(i=0;i<objects.length;i++){
+//                var obj = objects[i];
+//                var objdata = obj.userData;
+//                var scope = objdata.layer;
+//                scopeList.push(scope);
+//            }
+//            var scopeSet = Array.from(new Set(scopeList));
+//            //console.log(scopeSet);
+//            SPECT.guiList[v].removeByProperty('Available_Attributes');
+//            scopeSet.sort();
+//            SPECT.guiList[v].add(SPECT.uiVariables,'Available_Attributes', scopeSet).name('Scope').onChange(function(e){
+//                SPECT.filterVals[v] = e;
+//            });
+//            SPECT.filters[v] = 'layer';
+//        }
+//        else{
             var objects = SPECT.attributes.elementList;
             var attributeList = [];
             for (i=0;i<objects.length;i++){
@@ -2533,7 +2552,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                     //console.log(attSet);
                     //console.log(SPECT.searchAtt);
                 }); 
-        }
+        //}
         
         //console.log(SPECT.searchAtt);
     };
