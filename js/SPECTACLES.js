@@ -1464,6 +1464,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
 //            if (functionList.length !== 4){
 //                SPECT.UIfolders.Search_Model.removeByProperty('colorByAttribute');
 //            }
+            SPECT.UIfolders.Color_Coding.removeByProperty('colorByAttribute');
             SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables,'colorByAttribute').name('Color Code Model').onFinishChange(function(e){
                 updateColorCnsl();
                 $(".ColorConsole").css('visibility','visible');
