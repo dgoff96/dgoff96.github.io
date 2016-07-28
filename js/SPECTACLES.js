@@ -960,6 +960,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     
     //Rendered Display
     SPECT.Rendered = function(){
+        $(".ColorConsole").css('visibility', 'hidden');
+        $(".ColorHeader").css('visibility', 'hidden');
         var objs = SPECT.attributes.elementList;
         for(i=0;i<objs.length;i++){
             var obj = objs[i];
