@@ -396,8 +396,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         var colorCodeFolder = SPECT.datGui.addFolder('Color_Coding');
         SPECT.UIfolders.Color_Coding = colorCodeFolder;
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'Rendered');
-        SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorCodeByType');
-        SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorCodeByZone');
+        //SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorCodeByType');
+        //SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorCodeByZone');
         //SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorByAttribute');
         //console.log(SPECT.UIfolders.Color_Coding.__controllers.length);
     };
@@ -1459,12 +1459,12 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //console.log(attributeSet);
         //attributeSet.sort();
         //console.log(attributeSet);
-        SPECT.UIfolders.Search_Model.add(SPECT.uiVariables,'Attribute_To_Search_For',attributeSet).name('Color Code By:').onFinishChange(function (e) {
-            var functionList = SPECT.UIfolders.Search_Model.__controllers;
-            if (functionList.length !== 4){
-                SPECT.UIfolders.Search_Model.removeByProperty('colorByAttribute');
-            }
-            SPECT.UIfolders.Search_Model.add(SPECT.uiVariables,'colorByAttribute').name('Color Code Model').onFinishChange(function(e){
+        SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables,'Attribute_To_Search_For',attributeSet).name('Color Code By:').onFinishChange(function (e) {
+//            var functionList = SPECT.UIfolders.Search_Model.__controllers;
+//            if (functionList.length !== 4){
+//                SPECT.UIfolders.Search_Model.removeByProperty('colorByAttribute');
+//            }
+            SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables,'colorByAttribute').name('Color Code Model').onFinishChange(function(e){
                 updateColorCnsl();
                 $(".ColorConsole").css('visibility','visible');
                 $(".ColorHeader").css('visibility','visible');
