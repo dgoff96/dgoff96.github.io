@@ -607,13 +607,17 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 console.log("something went wrong while trying to load the json data.");
                 console.log(e);
             }
-            SPECT.UIfolders.Search_Model.removeByProperty('Attribute_To_Search_For');
-            SPECT.UIfolders.Search_Model.removeByProperty('Available_Attributes');
-            SPECT.CreateAttributeList('default');
+            //SPECT.UIfolders.Search_Model.removeByProperty('Attribute_To_Search_For');
+            //SPECT.UIfolders.Search_Model.removeByProperty('Available_Attributes');
+            SPECT.UIfolders.Search_Model.removeByProperty('Scopes');
+            SPECT.UIfolders.Color_Coding.removeByProperty('Attribute_To_Search_For');
+            SPECT.CreateScopeList();
+            SPECT.CreateAttributeList();
         };
 
         //read the file as text - this will fire the onload function above when a user selects a file
         reader.readAsText(input.files[0]);
+        SPECT.UIfolders.Color_Coding.removeByProperty('colorByAttribute');
 
         //hide the input form and blackout
         $("#OpenLocalFile").css("visibility", "hidden");
