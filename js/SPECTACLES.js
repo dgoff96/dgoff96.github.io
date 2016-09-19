@@ -379,15 +379,15 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         lightsFolder.add(SPECT.uiVariables, 'shadows').onChange(function (e) {
             SPECT.lightingRig.shadowsOnOff(e);
         });
-        /*//solar az and alt
-         lightsFolder.add(SPECT.uiVariables, 'solarAzimuth')
-         .min(0)
-         .max(359)
-         .step(1);
-         lightsFolder.add(SPECT.uiVariables, 'solarAltitude')
-         .min(0)
-         .max(90)
-         .step(0.1);*/
+//        //solar az and alt
+//         lightsFolder.add(SPECT.uiVariables, 'solarAzimuth')
+//         .min(0)
+//         .max(359)
+//         .step(1);
+//         lightsFolder.add(SPECT.uiVariables, 'solarAltitude')
+//         .min(0)
+//         .max(90)
+//         .step(0.1);
     };
     
     //**********************COLOR CODING (ADDED BY DG)******************************
@@ -396,11 +396,23 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         var colorCodeFolder = SPECT.datGui.addFolder('Color_Coding');
         SPECT.UIfolders.Color_Coding = colorCodeFolder;
         SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'Rendered');
+        //SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'Textured');
         //SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorCodeByType');
         //SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorCodeByZone');
         //SPECT.UIfolders.Color_Coding.add(SPECT.uiVariables, 'colorByAttribute');
         //console.log(SPECT.UIfolders.Color_Coding.__controllers.length);
     };
+    
+    //***********************TIMELINE UI(ADDED BY DG)*************************************
+    //call this method to enable construction timeline UI
+    SPECT.timelineUI = function(){
+        var timelineFolder = SPECT.datGui.addFolder('Construction_Timeline');
+        SPECT.UIfolders.timeline = timelineFolder;
+        SPECT.UIfolders.timeline.add(SPECT.uiVariables,'startDate');
+        SPECT.UIfolders.timeline.add(SPECT.uiVariables,'endDate');
+        SPECT.UIfolders.timeline.add(SPECT.uiVariables, 'generateTimeline');
+        //SPECT.UIfolders.timeline.add(SPECT.uiVariables,'time',-5,5).step(1);
+    }
     
     //***********************SEARCH BY ATTRIBUTES (ADDED BY DG)********************************
     //call this method to enable search UI
@@ -961,6 +973,95 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     };
     
     
+    //Textured Display
+//    SPECT.Textured = function(){
+//        var objs = SPECT.attributes.elementList;
+//        for(i=0;i<objs.length;i++){
+//            var obj = objs[i];
+//            var objData = obj.userData;
+//            var objName = objData.PANEL_FAMILY;
+//            if(objName !== undefined){
+//                var geo = obj.geometry;
+//                var faceCount = geo.faces.length;
+//                //console.log(faceCount);
+//                var objPatt = objName.substr(0,6);
+//                if (objPatt == "Z01A-1"){
+//                    var mat = new THREE.MeshLambertMaterial({
+//                        color: "rgb(150,150,150)",
+//                        ambient: "rgb(150,150,150)",
+//                        side: 2,
+//                        alphaMap:THREE.ImageUtils.loadTexture('images/Z1A1.png'),
+//                        transparent: true,
+//                    });
+//                    SPECT.attributes.paintElement(obj,mat);
+//                }
+//            }
+//        }
+//    };
+    
+    //Generate Slider for Timeline
+    SPECT.generateTimeline = function(){
+        if (SPECT.uiVariables.startDate != 'Start Date (yyyy-mm-dd)' && SPECT.uiVariables.endDate != 'End Date (yyyy-mm-dd)'){
+            var start = moment(SPECT.uiVariables.startDate);
+            var end = moment(SPECT.uiVariables.endDate);
+            var numDays = end.diff(start,"days");
+            var itr = start.twix(end).iterate("days");
+            var dayRange = [];
+            while(itr.hasNext()){
+                dayRange.push(itr.next().toDate());
+            }
+            
+            var objs = SPECT.attributes.elementList;
+            for(i=0;i<objs.length;i++){
+                var obj = objs[i];
+                var objData = obj.userData;
+                var objDate = objData.START_DATE;
+                //console.log(objDate);
+                if (objDate != undefined){
+                    //console.log(objDate);
+                    var actualDate = moment(objDate);
+                    
+                    if(actualDate.isSameOrBefore(end)){
+                        obj.visible = true;
+                    }
+                    else{
+                        obj.visible = false;
+                    }
+                }
+            }
+            
+            //console.log(dayRange);
+            SPECT.UIfolders.timeline.removeByProperty('TIMELINE');
+            SPECT.UIfolders.timeline.removeByProperty('generateTimeline');
+            SPECT.UIfolders.timeline.add(SPECT.uiVariables,'TIMELINE',0,numDays).step(1).onChange(function(e){
+                //console.log(dayRange[e]);
+                var currentDate = dayRange[e];
+                var dateString = currentDate.toISOString();
+                var splitDate = dateString.split('T');
+                $(".DateConsole").css('visibility', 'visible');
+                $(".DateHeader").css('visibility', 'visible');
+                updateDateCnsl(splitDate[0]);
+                var currentMoment = moment(splitDate[0]);
+                //console.log(currentDate);
+                var objs = SPECT.attributes.elementList;
+                for (i=0;i<objs.length;i++){
+                    var obj = objs[i];
+                    var objData = obj.userData;
+                    var objDate = objData.START_DATE;
+                    if(objDate != undefined){
+                        var actualDate = moment(objDate);
+                        if(actualDate.isSameOrBefore(currentMoment)){
+                            obj.visible = true;
+                        }
+                        else{
+                            obj.visible = false;
+                        }
+                    }
+                }
+            });
+            SPECT.UIfolders.timeline.add(SPECT.uiVariables,'generateTimeline');
+        }
+    }
     
     //Rendered Display
     SPECT.Rendered = function(){
@@ -1253,9 +1354,17 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     
     //SEARCH USING FILTERS (ADDED BY DG)
     SPECT.filteredSearch = function(){
+        SPECT.Rendered();
         SPECT.dataElements = [];
         var filterCheck;
         var filterValCheck;
+        //material for non relevant elements
+        var hideMat = new THREE.MeshBasicMaterial({
+            color: "rgb(125,125,125)",
+            transparent: true,
+            side:2,
+            opacity: .5,
+        })
         
         if(SPECT.uiVariables.Scopes === 'All'){
             //console.log(SPECT.filters);
@@ -1323,7 +1432,9 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 }
             }
             if(testList.indexOf(false) !== -1){
-                obj.visible = false;
+                //Attempting to make non selected elements change material
+                SPECT.attributes.paintElement(obj,hideMat);
+                //obj.visible = false;
             }
             else{
                 SPECT.counter += 1;
@@ -1379,6 +1490,10 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     
     function updateColorCnsl(){
         var colorCnsl = document.getElementById('colCnsl').innerHTML = SPECT.attributeList.length.toString();
+    }
+    
+    function updateDateCnsl(date){
+        var dateCnsl = document.getElementById('dateCnsl').innerHTML = date.toString();
     }
     
     //DOWNLOAD DATA AS CSV FILE FOR EXCEL (ADDED BY DG)
@@ -1900,6 +2015,22 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         this.Rendered = function(){
             SPECT.Rendered();
         };
+        
+//        this.Textured = function(){
+//            SPECT.Textured();
+//        };
+        
+        //start date
+        this.startDate = 'Start Date (yyyy-mm-dd)';
+        
+        //end date 
+        this.endDate = 'End Date (yyyy-mm-dd)';
+        
+        this.TIMELINE = 0.0;
+        
+        this.generateTimeline = function(){
+            SPECT.generateTimeline();
+        }
         
         //orcodebor Code By Type
         this.colorCodeByType = function(){

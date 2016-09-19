@@ -31,7 +31,7 @@ var mySpectacles;
 $(document).ready(function(){
 
     //load our sample JSON file from disk
-    $.getJSON("./sampleModels/RenderedPanels.json", function( data ){
+    $.getJSON("./sampleModels/DetailedModel.json", function( data ){
 
         //once loaded, initialize a Spectacles viewer by passing in the div to bind to, the json data, and a callback function
         //where we can enable application functionality in nice clean chunks
@@ -47,6 +47,7 @@ $(document).ready(function(){
             app.layersUI();
             app.colorCodingUI();
             app.searchUI();
+            app.timelineUI();
             app.downloadUI();
         });
     });
