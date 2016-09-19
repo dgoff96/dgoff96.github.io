@@ -1015,11 +1015,11 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
             for(i=0;i<objs.length;i++){
                 var obj = objs[i];
                 var objData = obj.userData;
-                var objDate = objData.START_DATE;
+                var objStartDate = objData.START_DATE;
                 //console.log(objDate);
-                if (objDate != undefined){
+                if (objStartDate != undefined){
                     //console.log(objDate);
-                    var actualDate = moment(objDate);
+                    var actualDate = moment(objStartDate);
                     
                     if(actualDate.isSameOrBefore(end)){
                         obj.visible = true;
@@ -1029,6 +1029,12 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                     }
                 }
             }
+            
+            var activeMat = new THREE.MeshLambertMaterial({
+                color: "rgb(0,255,255)",
+                ambient: "rgb(0,255,255)",
+                side: 2
+            });
             
             //console.log(dayRange);
             SPECT.UIfolders.timeline.removeByProperty('TIMELINE');
@@ -1047,14 +1053,24 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                 for (i=0;i<objs.length;i++){
                     var obj = objs[i];
                     var objData = obj.userData;
-                    var objDate = objData.START_DATE;
-                    if(objDate != undefined){
-                        var actualDate = moment(objDate);
+                    var objStartDate = objData.START_DATE;
+                    var objEndDate = objData.END_DATE;
+                    var originalMat = SPECT.originalMaterials[i];
+                    
+                    if(objStartDate != undefined){
+                        var actualDate = moment(objStartDate);
+                        var finishDate = moment(objEndDate);
                         if(actualDate.isSameOrBefore(currentMoment)){
                             obj.visible = true;
                         }
                         else{
                             obj.visible = false;
+                        }
+                        if(actualDate.isSameOrBefore(currentMoment) && finishDate.isAfter(currentMoment)){
+                            SPECT.attributes.paintElement(obj,activeMat);
+                        }
+                        else{
+                            SPECT.attributes.paintElement(obj,originalMat);
                         }
                     }
                 }
