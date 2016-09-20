@@ -54,6 +54,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.uniqueValues = 0;
     SPECT.searchedElements = [];
     SPECT.dataElements = [];
+    var timeGUI = undefined;
+    var customContainer = undefined;
     
     //var filterObj;
     var filterGUI;
@@ -972,36 +974,15 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         SPECT.jsonLoader.loadSceneFromJson(jsonData);
     };
     
-    
-    //Textured Display
-//    SPECT.Textured = function(){
-//        var objs = SPECT.attributes.elementList;
-//        for(i=0;i<objs.length;i++){
-//            var obj = objs[i];
-//            var objData = obj.userData;
-//            var objName = objData.PANEL_FAMILY;
-//            if(objName !== undefined){
-//                var geo = obj.geometry;
-//                var faceCount = geo.faces.length;
-//                //console.log(faceCount);
-//                var objPatt = objName.substr(0,6);
-//                if (objPatt == "Z01A-1"){
-//                    var mat = new THREE.MeshLambertMaterial({
-//                        color: "rgb(150,150,150)",
-//                        ambient: "rgb(150,150,150)",
-//                        side: 2,
-//                        alphaMap:THREE.ImageUtils.loadTexture('images/Z1A1.png'),
-//                        transparent: true,
-//                    });
-//                    SPECT.attributes.paintElement(obj,mat);
-//                }
-//            }
-//        }
-//    };
-    
+
     //Generate Slider for Timeline
     SPECT.generateTimeline = function(){
         if (SPECT.uiVariables.startDate != 'Start Date (yyyy-mm-dd)' && SPECT.uiVariables.endDate != 'End Date (yyyy-mm-dd)'){
+            var screenWide = $(window).width()-10; 
+            //comment next three lines to revert to original
+            timeGUI = new dat.GUI({autoPlace: false ,width:screenWide});
+            customContainer = document.getElementById('timeMove');
+            customContainer.appendChild(timeGUI.domElement);
             var start = moment(SPECT.uiVariables.startDate);
             var end = moment(SPECT.uiVariables.endDate);
             var numDays = end.diff(start,"days");
@@ -1039,7 +1020,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
             //console.log(dayRange);
             SPECT.UIfolders.timeline.removeByProperty('TIMELINE');
             SPECT.UIfolders.timeline.removeByProperty('generateTimeline');
-            SPECT.UIfolders.timeline.add(SPECT.uiVariables,'TIMELINE',0,numDays).step(1).onChange(function(e){
+            //change next line to add to SPECT.UIfolders.timeline to go back to original
+            timeGUI.add(SPECT.uiVariables,'TIMELINE',0,numDays).step(1).onChange(function(e){
                 //console.log(dayRange[e]);
                 var currentDate = dayRange[e];
                 var dateString = currentDate.toISOString();
@@ -1075,8 +1057,19 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                     }
                 }
             });
+            //comment next line out to go back to original
+            timeGUI.add(SPECT.uiVariables, 'closeTimeline').name('[X] CLOSE');
             SPECT.UIfolders.timeline.add(SPECT.uiVariables,'generateTimeline');
         }
+    }
+    
+    //Command for closing Timeline
+    SPECT.closeTimeline = function(){
+        timeGUI.destroy();
+        customContainer.removeChild(timeGUI.domElement);
+        SPECT.RESET();
+        $(".DateConsole").css('visibility','hidden');
+        $(".DateHeader").css('visibility','hidden');
     }
     
     //Rendered Display
@@ -2044,6 +2037,10 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         
         this.TIMELINE = 0.0;
         
+        this.closeTimeline = function(){
+            SPECT.closeTimeline();
+        }
+        
         this.generateTimeline = function(){
             SPECT.generateTimeline();
         }
@@ -2107,7 +2104,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //LIGHTING VARIABLES
 
         //point lights color
-        this.pointLightsColor = '#666666';
+        this.pointLightsColor = '#ffffff';
 
         //sun light on / off
         this.shadows = false;
