@@ -974,13 +974,30 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         SPECT.jsonLoader.loadSceneFromJson(jsonData);
     };
     
-
+    
+    //RESIZE TIMELINE WITH WINDOW RESIZE
+    document.onresize = function(){
+        if(timeGUI != undefined){
+            var w = $(window).innerWidth();
+            if(customContainer.children.length !=0){
+                timeGUI.width = w;
+            }
+        }
+    };
+    
     //Generate Slider for Timeline
     SPECT.generateTimeline = function(){
         if (SPECT.uiVariables.startDate != 'Start Date (yyyy-mm-dd)' && SPECT.uiVariables.endDate != 'End Date (yyyy-mm-dd)'){
-            var screenWide = $(window).width()-10; 
+            //console.log(timeGUI);
+            if(timeGUI != undefined){
+                timeGUI.destroy();
+                if(customContainer.children.length != 0){
+                customContainer.removeChild(timeGUI.domElement);
+                }
+            }
+            var screenWide = $(window).innerWidth(); 
             //comment next three lines to revert to original
-            timeGUI = new dat.GUI({autoPlace: false ,width:screenWide});
+            timeGUI = new dat.GUI({autoPlace: false , resizable: true , width:screenWide});
             customContainer = document.getElementById('timeMove');
             customContainer.appendChild(timeGUI.domElement);
             var start = moment(SPECT.uiVariables.startDate);
@@ -1066,6 +1083,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     //Command for closing Timeline
     SPECT.closeTimeline = function(){
         timeGUI.destroy();
+        console.log(timeGUI);
         customContainer.removeChild(timeGUI.domElement);
         SPECT.RESET();
         $(".DateConsole").css('visibility','hidden');
