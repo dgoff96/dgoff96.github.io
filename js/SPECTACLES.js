@@ -2053,7 +2053,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //end date 
         this.endDate = 'End Date (yyyy-mm-dd)';
         
-        this.TIMELINE = 0.0;
+        this.TIMELINE = 5.0;
         
         this.closeTimeline = function(){
             SPECT.closeTimeline();
