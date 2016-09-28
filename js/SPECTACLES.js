@@ -772,9 +772,9 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                         loadedObj.children[i].geometry.applyMatrix(mat);
 
                         //replace phong material with Lambert.  Phonga don't play so nice with our lighting setup
-                        var lambert = new THREE.MeshLambertMaterial();
-                        lambert.map = loadedObj.children[i].material.map;
-                        loadedObj.children[i].material = lambert;
+//                        var lambert = new THREE.MeshLambertMaterial();
+//                        lambert.map = loadedObj.children[i].material.map;
+//                        loadedObj.children[i].material = lambert;
 
                         //set up for transparency
                         loadedObj.children[i].material.side = 2;
@@ -788,9 +788,9 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
                             loadedObj.children[i].children[j].geometry.applyMatrix(mat);
 
                             //replace phong material with Lambert.  Phonga don't play so nice with our lighting setup
-                            var lambert = new THREE.MeshLambertMaterial();
-                            lambert.map = loadedObj.children[i].children[j].material.map;
-                            loadedObj.children[i].children[j].material = lambert;
+//                            var lambert = new THREE.MeshLambertMaterial();
+//                            lambert.map = loadedObj.children[i].children[j].material.map;
+//                            loadedObj.children[i].children[j].material = lambert;
 
                             //set up for transparency
                             loadedObj.children[i].children[j].material.side = 2;
@@ -1764,6 +1764,8 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
 
     //a spotlight representing the sun
     SPECT.lightingRig.sunLight = {};
+    
+    SPECT.lightingRig.hemiLight = {};
 
     //an array of point lights to provide even coverage of the scene
     SPECT.lightingRig.pointLights = [];
@@ -1772,7 +1774,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
     SPECT.lightingRig.createLights = function () {
 
         // create ambient light
-        SPECT.lightingRig.ambientLight = new THREE.AmbientLight(0x696969);
+        SPECT.lightingRig.ambientLight = new THREE.AmbientLight(0x000000);
         SPECT.scene.add(SPECT.lightingRig.ambientLight);
 
 
@@ -1786,44 +1788,44 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         //create a series of pointlights
 
         //directly above
-        var pointA = new THREE.PointLight(0x666666, 1, 0);
-        pointA.position.set(center.x, center.y + offset, center.z);
-        pointA.castShadow = false;
-        SPECT.scene.add(pointA);
-        SPECT.lightingRig.pointLights.push(pointA);
-
-        //directly below
-        var pointB = new THREE.PointLight(0x666666, 0.66, 0);
-        pointB.position.set(center.x, center.y - offset, center.z);
-        pointB.castShadow = false;
-        SPECT.scene.add(pointB);
-        SPECT.lightingRig.pointLights.push(pointB);
-
-
-        //4 from the cardinal directions, at roughly 45deg
-        var pointC = new THREE.PointLight(0x666666, 0.33, 0);
-        pointC.position.set(center.x + offset, center.y, center.z);
-        pointC.castShadow = false;
-        SPECT.scene.add(pointC);
-        SPECT.lightingRig.pointLights.push(pointC);
-
-        var pointD = new THREE.PointLight(0x666666, 0.33, 0);
-        pointD.position.set(center.x, center.y, center.z + offset);
-        pointD.castShadow = false;
-        SPECT.scene.add(pointD);
-        SPECT.lightingRig.pointLights.push(pointD);
-
-        var pointE = new THREE.PointLight(0x666666, 0.33, 0);
-        pointE.position.set(center.x - offset, center.y, center.z);
-        pointE.castShadow = false;
-        SPECT.scene.add(pointE);
-        SPECT.lightingRig.pointLights.push(pointE);
-
-        var pointF = new THREE.PointLight(0x666666, 0.33, 0);
-        pointF.position.set(center.x, center.y, center.z - offset);
-        pointF.castShadow = false;
-        SPECT.scene.add(pointF);
-        SPECT.lightingRig.pointLights.push(pointF);
+//        var pointA = new THREE.PointLight(0x666666, .33, 0);
+//        pointA.position.set(center.x, center.y + offset, center.z);
+//        pointA.castShadow = false;
+//        SPECT.scene.add(pointA);
+//        SPECT.lightingRig.pointLights.push(pointA);
+//
+//        //directly below
+//        var pointB = new THREE.PointLight(0x666666, 0.33, 0);
+//        pointB.position.set(center.x, center.y - offset, center.z);
+//        pointB.castShadow = false;
+//        SPECT.scene.add(pointB);
+//        SPECT.lightingRig.pointLights.push(pointB);
+//
+//
+//        //4 from the cardinal directions, at roughly 45deg
+//        var pointC = new THREE.PointLight(0x666666, 0.33, 0);
+//        pointC.position.set(center.x + offset, center.y, center.z);
+//        pointC.castShadow = false;
+//        SPECT.scene.add(pointC);
+//        SPECT.lightingRig.pointLights.push(pointC);
+//
+//        var pointD = new THREE.PointLight(0x666666, 0.33, 0);
+//        pointD.position.set(center.x, center.y, center.z + offset);
+//        pointD.castShadow = false;
+//        SPECT.scene.add(pointD);
+//        SPECT.lightingRig.pointLights.push(pointD);
+//
+//        var pointE = new THREE.PointLight(0x666666, 0.33, 0);
+//        pointE.position.set(center.x - offset, center.y, center.z);
+//        pointE.castShadow = false;
+//        SPECT.scene.add(pointE);
+//        SPECT.lightingRig.pointLights.push(pointE);
+//
+//        var pointF = new THREE.PointLight(0x666666, 0.33, 0);
+//        pointF.position.set(center.x, center.y, center.z - offset);
+//        pointF.castShadow = false;
+//        SPECT.scene.add(pointF);
+//        SPECT.lightingRig.pointLights.push(pointF);
 
 
 
@@ -1831,7 +1833,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         var light = new THREE.DirectionalLight(0xffffff, 1);
         light.position.set(center.x + offset, center.y + offset, center.z + offset);
         light.target.position.set(center.x, center.y, center.z);
-        //light.castShadow = true;
+        light.castShadow = false;
         light.shadowCameraNear = 1;
         light.shadowCameraFar = offset * 2.5;
         light.shadowCameraTop = offset * 1.2;
@@ -1840,15 +1842,23 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         light.shadowCameraLeft = offset * -1.2;
         light.distance = 0;
         light.intensity = 0;
-        light.shadowBias = 0.001;
+        light.shadowBias = 0;
         light.shadowMapHeight = SPECT.viewerDiv.innerHeight();
         light.shadowMapWidth = SPECT.viewerDiv.innerWidth();
-        light.shadowDarkness = 0.65;
-        //light.shadowCameraVisible = true;
+        light.shadowDarkness = 0.05;
+        light.shadowCameraVisible = false;
 
         //add the light to our scene and to our app object
         SPECT.lightingRig.sunLight = light;
         SPECT.scene.add(light);
+        
+                //hemilight 
+        var hemiLight = new THREE.HemisphereLight(  0xafafaf, 0xafafaf, 1 );
+//        hemiLight.color.setRGB(255,255,255 );
+//        hemiLight.groundColor.setRGB( 255,255,255 );
+        hemiLight.position.set(0,50000,0);
+        SPECT.lightingRig.hemiLight = hemiLight;
+        SPECT.scene.add( hemiLight );
 
     };
 
