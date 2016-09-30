@@ -1833,7 +1833,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         var light = new THREE.DirectionalLight(0xffffff, 1);
         light.position.set(center.x + offset, center.y + offset, center.z + offset);
         light.target.position.set(center.x, center.y, center.z);
-        light.castShadow = false;
+        light.castShadow = true;
         light.shadowCameraNear = 1;
         light.shadowCameraFar = offset * 2.5;
         light.shadowCameraTop = offset * 1.2;
@@ -1841,7 +1841,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         light.shadowCameraBottom = offset * -1.2;
         light.shadowCameraLeft = offset * -1.2;
         light.distance = 0;
-        light.intensity = 0;
+        light.intensity = 1;
         light.shadowBias = 0;
         light.shadowMapHeight = SPECT.viewerDiv.innerHeight();
         light.shadowMapWidth = SPECT.viewerDiv.innerWidth();
@@ -2135,7 +2135,7 @@ var SPECTACLES = function (divToBind, jsonFileData, callback) {
         this.pointLightsColor = '#ffffff';
 
         //sun light on / off
-        this.shadows = false;
+        this.shadows = true;
 
         //sun azimuth and altitude
         this.solarAzimuth = 180;
